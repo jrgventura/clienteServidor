@@ -1,3 +1,7 @@
+from django.shortcuts import render_to_response
+from forms import PostForm
+from django.http import HttpResponseRedirect
+from django.core.context_processors import csrf
 from django.shortcuts import render
 from django.utils import timezone
 from .models import Post
@@ -15,12 +19,15 @@ def post_list(request):
 
 	#cursor.execute ('select mes from MESproceso;')
 
-	cursor.execute('SELECT * FROM PLANILLA;')
+
+	#cursor.execute('SELECT * FROM PLANILLA;')
+	cursor.execute('select tra.idTrabajador, tra.Apellidos, tra.Nombres, afp.descripcion, pla.idMes, pla.diasFalta,pla.horasfalta, pla.totalingresos, pla.totalingresos from planilla as pla  inner join Trabajador as tra  on pla.idTrabajador = tra.idTrabajador  inner join Afp as afp on pla.idAfp = afp.idAfp;')
+
 	row = cursor.fetchone()
 	while row:
 	 	#print str(row[0]) + " " + str(row[1]) + " " + str(row[2])   
 	 	#row = cursor.fetchone()
-	     result += str(row[0]) + "  " + str(row[1]) + " " + str(row[2]) + " " + str(row[7])
+	     result += str(row[0]) + "  " + str(row[1]) + " " + str(row[2]) + " " + str(row[3])
 	     result += str("\n")
 	     row = cursor.fetchone()
 	 #print result
@@ -46,6 +53,47 @@ def fecha_list(request):
 	 	#print str(row[0]) + " " + str(row[1]) + " " + str(row[2])   
 	 	#row = cursor.fetchone()
 	     result += str(row[0])
+	     result += str("\n")
+	     row = cursor.fetchone()
+	 #print result
+	return render(request, 'blog/post_list.html', {'result': result})
+
+
+def crear(request):
+    if request.POST:
+        form = PostForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+            return HttpResponseRedirect('/')
+    else:
+        form = PostForm()
+
+    args = {}
+    args.update(csrf(request))
+
+    args['form'] = form
+
+    return render_to_response('crear_articulo.html', args)
+
+
+def listar_datos_completos (request):
+	import pymssql
+	conn = pymssql.connect(server='servidor12.database.windows.net', user='chuchurro@servidor12', password='Pa$$w0rd', database='Planilla')
+	cursor = conn.cursor()
+	result = ""
+	#Select
+	#cursor.execute('SELECT IDTRABAJADOR,APELLIDOS,NOMBRES FROM TRABAJADOR;')
+
+	#cursor.execute ('select mes from MESproceso;')
+
+
+	cursor.execute('select tra.idTrabajador, tra.Apellidos, tra.Nombres, afp.descripcion, pla.idMes, pla.diasFalta,pla.horasfalta, pla.totalingresos, pla.totalingresos from planilla as pla  inner join Trabajador as tra  on pla.idTrabajador = tra.idTrabajador  inner join Afp as afp on pla.idAfp = afp.idAfp;')
+	row = cursor.fetchone()
+	while row:
+	 	#print str(row[0]) + " " + str(row[1]) + " " + str(row[2])   
+	 	#row = cursor.fetchone()
+	     result += str(row[0]) + "  " + str(row[1]) + " " + str(row[2]) + " " + str(row[3])
 	     result += str("\n")
 	     row = cursor.fetchone()
 	 #print result
