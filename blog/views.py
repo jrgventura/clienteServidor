@@ -27,7 +27,7 @@ def post_list(request):
 	while row:
 	 	#print str(row[0]) + " " + str(row[1]) + " " + str(row[2])   
 	 	#row = cursor.fetchone()
-	     result += str(row[0]) + "  " + str(row[1]) + " " + str(row[2]) + " " + str(row[3])
+	     result += str(row[0]) + "  " + str(row[1]) + " " + str(row[2]) + " " + str(row[3]) + " " + str(row[4]) + " " + str(row[5]) + " " + str(row[6]) + " " + str(row[7]) + " " + str(row[8])
 	     result += str("\n")
 	     row = cursor.fetchone()
 	 #print result
@@ -38,6 +38,26 @@ def post_list(request):
 
 	#cursor.close()
      #   return ret
+
+def planilla(request,idmes):
+	import pymssql
+	conn = pymssql.connect(server='servidor12.database.windows.net', user='chuchurro@servidor12', password='Pa$$w0rd', database='Planilla')
+	cursor = conn.cursor()
+	result = ""
+
+	ret = cursor.callproc("dbo._CalcularPlanillaPagos_G3_s2", (idmes))
+
+	cursor.execute('select tra.idTrabajador, tra.Apellidos, tra.Nombres, afp.descripcion, pla.idMes, pla.diasFalta,pla.horasfalta, pla.totalingresos, pla.totalingresos from planilla as pla  inner join Trabajador as tra  on pla.idTrabajador = tra.idTrabajador  inner join Afp as afp on pla.idAfp = afp.idAfp;')
+	row = cursor.fetchone()
+	while row:
+	 	#print str(row[0]) + " " + str(row[1]) + " " + str(row[2])   
+	 	#row = cursor.fetchone()
+	     result += str(row[0]) + "  " + str(row[1]) + " " + str(row[2]) + " " + str(row[3]) + " " + str(row[4]) + " " + str(row[5]) + " " + str(row[6]) + " " + str(row[7]) + " " + str(row[8])
+	     result += str("\n")
+	     row = cursor.fetchone()
+	 #print result
+	return render(request, 'blog/post_list.html', {'result': result})
+
 
 
 def fecha_list(request):
