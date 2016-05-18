@@ -1,0 +1,30 @@
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<form method="POST" action="">{% csrf_token %}
+				{% for field in form %}
+				    <div class="field_container">				    	
+				        <div class="col-md-2">{{ field.label_tag }}</div>
+				        <div class="clearfix"></div>
+				        <div class="col-md-2">{{ field }}</div>
+				        <div class="clearfix"></div>
+				        {% if field.errors %}
+				    	<div class="row">
+					        <div class="label label-danger col-md-2">
+					        	{{ field.errors  }}
+							</div>
+						</div>
+					    {% endif %}
+				    </div>
+				{% endfor %}
+		        <input type="submit" value="Submit">
+			</form>
+		</div>
+	</div>
+</body>
+</html>

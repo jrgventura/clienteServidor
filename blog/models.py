@@ -18,3 +18,6 @@ class Post(models.Model):
 
         def __str__(self):
             return self.title
+
+class Mes(models.Model):
+	title = models.CharField(max_length=100) #char de 100

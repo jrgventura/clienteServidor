@@ -7,3 +7,7 @@ class PostForm(forms.ModelForm):
    class Meta:
       model = Post
       fields = '__all__'
+
+
+class MesForm(forms.ModelForm):
+	title = forms.CharField(max_length=100)

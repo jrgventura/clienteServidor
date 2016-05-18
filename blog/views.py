@@ -1,10 +1,12 @@
 from django.shortcuts import render_to_response
 from forms import PostForm
+from forms import MesForm
 from django.http import HttpResponseRedirect
 from django.core.context_processors import csrf
 from django.shortcuts import render
 from django.utils import timezone
 from .models import Post
+from .models import Mes
 # Create your views here.
 
 def post_list(request):
@@ -146,3 +148,25 @@ def listar_datos_completos (request):
 #      print result
 #
 #
+
+
+def create_mes(request):
+	#si es una peticion post
+    if request.method == "POST":
+    	#asignamos a form el formulario para validar
+        form = MesForm(request.POST)
+        #si el formulario es validado correctamente
+        if form.is_valid():
+        	#creamos una nueva instancia de Post con los campos del form
+        	#asi capturamos los valores post
+        	newMes = Mes(title = request.POST["title"])
+        	#guardamos el post
+        	newMes.save()
+        	#redirigimos a la ruta con name add_post, que es esta
+        	return redirect('add_mes')
+    else:
+    	#si no es una peticion post, asignamos a form 
+    	#el form que hemos creado sin datos
+        form = MesForm()
+    #siempre devolvemos la misma respuesta
+    return render_to_response("crear_mes.html",{"form":form}, context_instance = RequestContext(request))
