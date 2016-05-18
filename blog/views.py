@@ -124,3 +124,5 @@ def listar_datos_completos (request):
 #          result += str("\n")
 #          row = cursor.fetchone()
 #      print result
+#
+#
